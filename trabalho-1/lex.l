@@ -2,10 +2,6 @@
 which can be accessed inside yylex() 
 and main() ***/
 %{
-#include <stdbool.h>
-
-char output[] = "";
-bool hasError = false;
 %}
 
 /*** Rule Section has three rules, first rule 
@@ -13,38 +9,92 @@ matches with capital letters, second rule
 matches with any character except newline and 
 third rule does not take input after the enter***/
 %%
-String\[] |
-System.out.println |
-class |
-double |
-else |
-if |
-main |
-public |
-return |
-static |
-void |
+String\[] {
+  printf("<STRING[]>");
+}
+System.out.println {
+  printf("<PRINTLN>");
+}
+class {
+  printf("<CLASS>");
+}
+double {
+  printf("<DOUBLE>");
+}
+else {
+  printf("<ELSE>");
+}
+if {
+  printf("<IF>");
+}
+main {
+  printf("<MAIN>");
+}
+public {
+  printf("<PUBLIC>");
+}
+static {
+  printf("<STATIC>");
+}
+void {
+  printf("<VOID>");
+}
 while {
-  printf("<PALAVRA_RESERVADA, %s>", yytext);
+  printf("<WHILE>");
 }
-[+-] {
-	printf("<OP_AD, %s>", yytext);
++ {
+  printf("<ADDITIVE_OPERATOR>");
 }
-[*/] {
-	printf("<OP_MUL, %s>", yytext);
+- {
+  printf("<SUBTRACTION_OPERATOR>");
 }
-== |
-!= |
->= |
-\<= |
-[><] {
-	printf("<RELACAO, %s>", yytext);
+* {
+  printf("<MULTIPLICATION_OPERATOR>");
+}
+/ {
+  printf("<DIVISION_OPERATOR>");
+}
+== {
+  printf("<EQUAL>");
+}
+!= {
+  printf("<NOT_EQUAL>");
+}
+>= {
+  printf("<GREATER_EQUAL>");
+}
+\<= {
+  printf("<LESS_EQUAL>");
+}
+> {
+  printf("<GREATER>");
+}
+< {
+  printf("<LESS>");
 }
 = {
-  printf("<OP_ATR>");
+  printf("<ASSIGNMENT_OPERATOR>");
 }
-[}{)(;,] {
-	printf("<PONTUACAO, %s>", yytext);
+{ {
+	printf("<LEFT_CURLY_BRACKET>");
+}
+} {
+	printf("<RIGHT_CURLY_BRACKET>");
+}
+( {
+	printf("<LEFT_PARENTHESIS>");
+}
+) {
+	printf("<RIGHT_PARENTHESIS>");
+}
+; {
+	printf("<SEMICOLON>");
+}
+, {
+	printf("<COMMA>");
+}
+lerDouble {
+	printf("<LER_DOUBLE>");
 }
 [A-Za-z_][0-9A-Za-z_]* {
 	printf("<ID, %s>", yytext);
@@ -53,7 +103,9 @@ while {
 	printf("<NUMERO_REAL, %s>", yytext);
 }
 [ \n\r\f\t]
-. printf("<ERRO>, %s>", yytext);
+. {
+	printf("<ERRO>, %s>", yytext);
+}
 %%
 /*** Code Section prints the number of
 capital letter present in the given input***/

@@ -1,0 +1,5 @@
+- trabalho-1
+   -
+- trabalho-2
+   - g++ trabalho-2.cpp
+   - cat .\input.txt | .\a.exe > .\output

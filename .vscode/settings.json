@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "deque": "cpp",
+    "string": "cpp",
+    "vector": "cpp",
+    "iostream": "cpp",
+    "fstream": "cpp",
+    "sstream": "cpp",
+    "regex": "cpp",
+    "iosfwd": "cpp"
+  }
+}
