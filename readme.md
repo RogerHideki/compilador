@@ -1,5 +1,7 @@
 - trabalho-1
-   -
+   - flex ./trabalho-1/lex.l
+   - gcc lex.yy.c
+   - cat ./trabalho-1/input.txt | ./a.out > ./output.txt
 - trabalho-2
    - g++ trabalho-2.cpp
-   - cat .\input.txt | .\a.exe > .\output
+   - cat ./input.txt | ./a.exe > ./output.txt

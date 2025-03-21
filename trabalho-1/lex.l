@@ -10,101 +10,101 @@ matches with any character except newline and
 third rule does not take input after the enter***/
 %%
 String\[] {
-  printf("<STRING[]>");
+  printf("<STRING[]>\n");
 }
 System.out.println {
-  printf("<PRINTLN>");
+  printf("<PRINTLN>\n");
 }
 class {
-  printf("<CLASS>");
+  printf("<CLASS>\n");
 }
 double {
-  printf("<DOUBLE>");
+  printf("<DOUBLE>\n");
 }
 else {
-  printf("<ELSE>");
+  printf("<ELSE>\n");
 }
 if {
-  printf("<IF>");
+  printf("<IF>\n");
 }
 main {
-  printf("<MAIN>");
+  printf("<MAIN>\n");
 }
 public {
-  printf("<PUBLIC>");
+  printf("<PUBLIC>\n");
 }
 static {
-  printf("<STATIC>");
+  printf("<STATIC>\n");
 }
 void {
-  printf("<VOID>");
+  printf("<VOID>\n");
 }
 while {
-  printf("<WHILE>");
+  printf("<WHILE>\n");
 }
-+ {
-  printf("<ADDITIVE_OPERATOR>");
+\+ {
+  printf("<ADDITIVE_OPERATOR>\n");
 }
 - {
-  printf("<SUBTRACTION_OPERATOR>");
+  printf("<SUBTRACTION_OPERATOR>\n");
 }
-* {
-  printf("<MULTIPLICATION_OPERATOR>");
+\* {
+  printf("<MULTIPLICATION_OPERATOR>\n");
 }
-/ {
-  printf("<DIVISION_OPERATOR>");
+\/ {
+  printf("<DIVISION_OPERATOR>\n");
 }
 == {
-  printf("<EQUAL>");
+  printf("<EQUAL>\n");
 }
 != {
-  printf("<NOT_EQUAL>");
+  printf("<NOT_EQUAL>\n");
 }
 >= {
-  printf("<GREATER_EQUAL>");
+  printf("<GREATER_EQUAL>\n");
 }
 \<= {
-  printf("<LESS_EQUAL>");
+  printf("<LESS_EQUAL>\n");
 }
 > {
-  printf("<GREATER>");
+  printf("<GREATER>\n");
 }
-< {
-  printf("<LESS>");
+\< {
+  printf("<LESS>\n");
 }
 = {
-  printf("<ASSIGNMENT_OPERATOR>");
+  printf("<ASSIGNMENT_OPERATOR>\n");
 }
-{ {
-	printf("<LEFT_CURLY_BRACKET>");
+\{ {
+	printf("<LEFT_CURLY_BRACKET>\n");
 }
-} {
-	printf("<RIGHT_CURLY_BRACKET>");
+\} {
+	printf("<RIGHT_CURLY_BRACKET>\n");
 }
-( {
-	printf("<LEFT_PARENTHESIS>");
+\( {
+	printf("<LEFT_PARENTHESIS>\n");
 }
-) {
-	printf("<RIGHT_PARENTHESIS>");
+\) {
+	printf("<RIGHT_PARENTHESIS>\n");
 }
 ; {
-	printf("<SEMICOLON>");
+	printf("<SEMICOLON>\n");
 }
 , {
-	printf("<COMMA>");
+	printf("<COMMA>\n");
 }
 lerDouble {
-	printf("<LER_DOUBLE>");
+	printf("<LER_DOUBLE>\n");
 }
 [A-Za-z_][0-9A-Za-z_]* {
-	printf("<ID, %s>", yytext);
+	printf("<ID, %s>\n", yytext);
 }
 [0-9]+(\.[0-9]+)? {
-	printf("<REAL_NUMBER, %s>", yytext);
+	printf("<REAL_NUMBER, %s>\n", yytext);
 }
 [ \n\r\f\t]
 . {
-	printf("<ERRO>, %s>", yytext);
+	printf("<ERRO>, %s>\n", yytext);
 }
 %%
 /*** Code Section prints the number of
