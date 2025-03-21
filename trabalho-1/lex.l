@@ -100,7 +100,7 @@ lerDouble {
 	printf("<ID, %s>", yytext);
 }
 [0-9]+(\.[0-9]+)? {
-	printf("<NUMERO_REAL, %s>", yytext);
+	printf("<REAL_NUMBER, %s>", yytext);
 }
 [ \n\r\f\t]
 . {
