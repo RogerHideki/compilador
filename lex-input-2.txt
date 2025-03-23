@@ -6,7 +6,6 @@ else
 if
 main
 public
-return
 static
 void
 while
@@ -21,13 +20,13 @@ while
 >
 <
 =
-}
 {
-)
-
+}
 (
+)
 ;
 ,
+lerDouble
 whilema
 identifier0
 Identifier5
@@ -41,3 +40,6 @@ _Identifier_9__ads_AWE
 0.012345
 12345
 12345.6789
+
+.... .... &RROR
+&RROR LLLL ....
