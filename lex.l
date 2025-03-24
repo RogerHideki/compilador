@@ -56,8 +56,10 @@ while { printToken("WHILE", NULL); }
   column = 1;
 }
 
-[^ \t\r\n]+ { printToken("ERRO", yytext); }
+. { printToken("ERROR", NULL); }
 %%
+
+int yywrap() { return 1; }
 
 int main() {
   line = column = 1;
