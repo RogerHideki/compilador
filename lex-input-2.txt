@@ -32,14 +32,13 @@ identifier0
 Identifier5
 _identifier9
 _Identifier_9__ads_AWE
+mainmain
 0
 0.0
-0.5
 0.9
-01
-  0.012345
-   12345
-         12345.6789
-
+9
+9.0
+9.9
+90.99
 .... .... &RROR
 &RROR LLLL ....
