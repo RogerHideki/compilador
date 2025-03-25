@@ -4,9 +4,9 @@
 unsigned long long int line, column;
 
 void printToken(const char *token, const char *lexeme) {
-  printf("<%s, %llu, %llu", token, line, column);
-  if (lexeme) printf(", %s", lexeme);
-  printf(">\n");
+  printf("%s %llu %llu", token, line, column);
+  if (lexeme) printf(" %s", lexeme);
+  printf("\n");
   column += yyleng;
 }
 %}
