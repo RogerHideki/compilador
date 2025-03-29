@@ -1,28 +1,28 @@
-PROG          -> public class id {  public static void main ( String [ ] id ) {  <CMDS> } } 
-CMDS          -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
-DC            -> <VAR> <MAIS_CMDS>
-VAR           -> <TIPO> <VARS>
-VARS          -> id<MAIS_VAR>
-MAIS_VAR      -> ,<VARS> | λ
-TIPO          -> double
-MAIS_CMDS     -> ;<CMDS>
-CMD_COND      -> if (  <CONDICAO> )  {<CMDS>} <PFALSA>
-                 | while (  <CONDICAO> )  {<CMDS>}
+ARGUMENTOS    -> id <MAIS_IDENT>
 CMD           -> System.out.println (<EXPRESSAO>) 
                  | id <RESTO_IDENT> 
-PFALSA        -> else { <CMDS> } | λ
-RESTO_IDENT   -> = <EXP_IDENT> | (<LISTA_ARG>)
-LISTA_ARG     -> <ARGUMENTOS> | λ
-ARGUMENTOS    -> id <MAIS_IDENT>
-MAIS_IDENT    -> , <ARGUMENTOS> | λ
-EXP_IDENT     -> <EXPRESSAO> | lerDouble()
+CMDS          -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
+CMD_COND      -> if (  <CONDICAO> )  {<CMDS>} <PFALSA>
+                 | while (  <CONDICAO> )  {<CMDS>}
 CONDICAO      -> <EXPRESSAO> <RELACAO> <EXPRESSAO>
-RELACAO       -> == | != | >= | <= | > | <
+DC            -> <VAR> <MAIS_CMDS>
 EXPRESSAO     -> <TERMO> <OUTROS_TERMOS>
-TERMO         -> <OP_UN> <FATOR> <MAIS_FATORES>
-OP_UN         -> - | λ
+EXP_IDENT     -> <EXPRESSAO> | lerDouble()
 FATOR         -> id | numero_real | (<EXPRESSAO>)
-OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
-OP_AD         -> + | -
+LISTA_ARG     -> <ARGUMENTOS> | λ
+MAIS_CMDS     -> ;<CMDS>
 MAIS_FATORES  -> <OP_MUL> <FATOR> <MAIS_FATORES> | λ
+MAIS_IDENT    -> , <ARGUMENTOS> | λ
+MAIS_VAR      -> ,<VARS> | λ
+OP_AD         -> + | -
 OP_MUL        -> * | /
+OP_UN         -> - | λ
+OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
+PFALSA        -> else { <CMDS> } | λ
+PROG          -> public class id {  public static void main ( String [ ] id ) {  <CMDS> } } 
+RELACAO       -> == | != | >= | <= | > | <
+RESTO_IDENT   -> = <EXP_IDENT> | (<LISTA_ARG>)
+TERMO         -> <OP_UN> <FATOR> <MAIS_FATORES>
+TIPO          -> double
+VAR           -> <TIPO> <VARS>
+VARS          -> id<MAIS_VAR>
