@@ -1,5 +1,6 @@
-lex-output.txt
 lex.exe
 lex.yy.c
-trabalho-2-output.txt
+# lex-output.txt
+# object-code.txt
 trabalho-2.exe
+# trabalho-2-output.txt

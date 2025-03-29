@@ -173,7 +173,7 @@ void subt() {
 }
 
 int main() {
-    ifstream inputFile("codigo-objeto.txt");
+    ifstream inputFile("object-code.txt");
     string line;
     vector<pair<int, double>> objectCode;
     map<string, int> m;

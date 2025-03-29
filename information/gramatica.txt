@@ -1,10 +1,10 @@
 PROG          -> public class id {  public static void main ( String [ ] id ) {  <CMDS> } } 
+CMDS          -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
 DC            -> <VAR> <MAIS_CMDS>
 VAR           -> <TIPO> <VARS>
 VARS          -> id<MAIS_VAR>
 MAIS_VAR      -> ,<VARS> | λ
 TIPO          -> double
-CMDS          -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
 MAIS_CMDS     -> ;<CMDS>
 CMD_COND      -> if (  <CONDICAO> )  {<CMDS>} <PFALSA>
                  | while (  <CONDICAO> )  {<CMDS>}
