@@ -15,32 +15,59 @@ vector<Token> tokens;
 ulli idx = 0;
 
 void error();
-void match(const string& expectedToken);
+
+void match(const string &expectedToken);
+
 void argumentos();
+
 void cmd();
+
 void cmds();
+
 void cmdCond();
+
 void condicao();
+
 void dc();
+
 void expressao();
+
 void expIdent();
+
 void fator();
+
 void listaArg();
+
 void maisCmds();
+
 void maisFatores();
+
 void maisIdent();
+
 void maisVar();
+
 void opAd();
+
 void opMul();
+
 void opUn();
+
 void outrosTermos();
+
 void pfalsa();
+
 void prog();
+
 void relacao();
+
 void restoIdent();
+
 void termo();
+
 void tipo();
+
 void var();
+
 void vars();
 
 void error() {
@@ -48,7 +75,7 @@ void error() {
     exit(1);
 }
 
-void match(const string& expectedToken) {
+void match(const string &expectedToken) {
     if (tokens[idx++].token == expectedToken) return;
     error();
 }
