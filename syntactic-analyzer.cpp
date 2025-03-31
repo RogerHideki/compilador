@@ -12,6 +12,7 @@ struct Token {
 };
 
 vector<Token> tokens;
+ulli tokensSize;
 ulli idx = 0;
 
 void error();
@@ -71,17 +72,24 @@ void var();
 void vars();
 
 void error() {
-    cout << "Erro de Sintaxe\n";
+    if (idx < tokensSize) {
+        cout << "Erro de Sintaxe na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
+             << ". Símbolo inesperado: " << tokens[idx].lexeme << ".\n";
+    } else {
+        cout << "Erro de Sintaxe: fim inesperado do arquivo.\n";
+    }
     exit(1);
 }
 
 void match(const string &expectedToken) {
-    if (tokens[idx++].token == expectedToken) return;
+    if (idx >= tokensSize) error();
+    if (tokens[idx].token == expectedToken) return idx++;
     error();
 }
 
 // ARGUMENTOS -> id <MAIS_IDENT>
 void argumentos() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ID") {
         match("ID");
         maisIdent();
@@ -92,6 +100,7 @@ void argumentos() {
 
 // CMD -> System.out.println (<EXPRESSAO>) | id <RESTO_IDENT>
 void cmd() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "PRINTLN") {
         match("PRINTLN");
         match("LEFT_PARENTHESIS");
@@ -109,6 +118,7 @@ void cmd() {
 
 // CMDS -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
 void cmds() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "PRINTLN" ||
         tokens[idx].token == "ID") {
         cmd();
@@ -128,6 +138,7 @@ void cmds() {
 
 // CMD_COND -> if (  <CONDICAO> )  {<CMDS>} <PFALSA> | while (  <CONDICAO> )  {<CMDS>}
 void cmdCond() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "IF") {
         match("IF");
         match("LEFT_PARENTHESIS");
@@ -154,6 +165,7 @@ void cmdCond() {
 
 // CONDICAO -> <EXPRESSAO> <RELACAO> <EXPRESSAO>
 void condicao() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -168,6 +180,7 @@ void condicao() {
 
 // DC -> <VAR> <MAIS_CMDS>
 void dc() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "DOUBLE") {
         var();
         maisCmds();
@@ -178,6 +191,7 @@ void dc() {
 
 // EXPRESSAO -> <TERMO> <OUTROS_TERMOS>
 void expressao() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -191,6 +205,7 @@ void expressao() {
 
 // EXP_IDENT -> <EXPRESSAO> | lerDouble()
 void expIdent() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -209,6 +224,7 @@ void expIdent() {
 
 // FATOR -> id | numero_real | (<EXPRESSAO>)
 void fator() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ID") {
         match("ID");
         return;
@@ -228,6 +244,7 @@ void fator() {
 
 // LISTA_ARG -> <ARGUMENTOS> | λ
 void listaArg() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ID") {
         argumentos();
     }
@@ -235,6 +252,7 @@ void listaArg() {
 
 // MAIS_CMDS -> ;<CMDS>
 void maisCmds() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SEMICOLON") {
         match("SEMICOLON");
         cmds();
@@ -245,6 +263,7 @@ void maisCmds() {
 
 // MAIS_FATORES -> <OP_MUL> <FATOR> <MAIS_FATORES> | λ
 void maisFatores() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "MULTIPLICATION_OPERATOR" ||
         tokens[idx].token == "DIVISION_OPERATOR") {
         opMul();
@@ -255,6 +274,7 @@ void maisFatores() {
 
 // MAIS_IDENT -> , <ARGUMENTOS> | λ
 void maisIdent() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "COMMA") {
         match("COMMA");
         argumentos();
@@ -263,6 +283,7 @@ void maisIdent() {
 
 // MAIS_VAR -> ,<VARS> | λ
 void maisVar() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "COMMA") {
         match("COMMA");
         vars();
@@ -271,6 +292,7 @@ void maisVar() {
 
 // OP_AD -> + | -
 void opAd() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ADDITIVE_OPERATOR") {
         match("ADDITIVE_OPERATOR");
         return;
@@ -284,6 +306,7 @@ void opAd() {
 
 // OP_MUL -> * | /
 void opMul() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "MULTIPLICATION_OPERATOR") {
         match("MULTIPLICATION_OPERATOR");
         return;
@@ -297,6 +320,7 @@ void opMul() {
 
 // OP_UN -> - | λ
 void opUn() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
     }
@@ -304,6 +328,7 @@ void opUn() {
 
 // OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
 void outrosTermos() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ADDITIVE_OPERATOR" ||
         tokens[idx].token == "SUBTRACTION_OPERATOR") {
         opAd();
@@ -314,6 +339,7 @@ void outrosTermos() {
 
 // PFALSA -> else { <CMDS> } | λ
 void pfalsa() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ELSE") {
         match("ELSE");
         match("LEFT_CURLY_BRACKET");
@@ -324,6 +350,7 @@ void pfalsa() {
 
 // PROG -> public class id {  public static void main ( String [ ] id ) {  <CMDS> } }
 void prog() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "PUBLIC") {
         match("PUBLIC");
         match("CLASS");
@@ -348,6 +375,7 @@ void prog() {
 
 // RELACAO -> == | != | >= | <= | > | <
 void relacao() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "EQUAL") {
         match("EQUAL");
         return;
@@ -377,6 +405,7 @@ void relacao() {
 
 // RESTO_IDENT -> = <EXP_IDENT> | (<LISTA_ARG>)
 void restoIdent() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ASSIGNMENT_OPERATOR") {
         match("ASSIGNMENT_OPERATOR");
         expIdent();
@@ -393,6 +422,7 @@ void restoIdent() {
 
 // TERMO -> <OP_UN> <FATOR> <MAIS_FATORES>
 void termo() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -407,6 +437,7 @@ void termo() {
 
 // TIPO -> double
 void tipo() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "DOUBLE") {
         match("DOUBLE");
     } else {
@@ -416,6 +447,7 @@ void tipo() {
 
 // VAR -> <TIPO> <VARS>
 void var() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "DOUBLE") {
         tipo();
         vars();
@@ -426,6 +458,7 @@ void var() {
 
 // VARS -> id<MAIS_VAR>
 void vars() {
+    if (idx >= tokensSize) error();
     if (tokens[idx].token == "ID") {
         match("ID");
         maisVar();
@@ -447,6 +480,7 @@ int main() {
         }
         tokens.push_back({token, stoull(line), stoull(column), lexeme});
     }
+    tokensSize = tokens.size();
     prog();
     return 0;
 }

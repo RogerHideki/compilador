@@ -12,40 +12,40 @@ void printToken(const char *token, const char *lexeme) {
 %}
 
 %%
-String\[] { printToken("STRING[]", NULL); }
-System.out.println { printToken("PRINTLN", NULL); }
-class { printToken("CLASS", NULL); }
-double { printToken("DOUBLE", NULL); }
-else { printToken("ELSE", NULL); }
-if { printToken("IF", NULL); }
-lerDouble { printToken("LER_DOUBLE", NULL); }
-main { printToken("MAIN", NULL); }
-public { printToken("PUBLIC", NULL); }
-static { printToken("STATIC", NULL); }
-void { printToken("VOID", NULL); }
-while { printToken("WHILE", NULL); }
+String\[] { printToken("STRING[]", "String[]"); }
+System.out.println { printToken("PRINTLN", "System.out.println"); }
+class { printToken("CLASS", "class"); }
+double { printToken("DOUBLE", "double"); }
+else { printToken("ELSE", "else"); }
+if { printToken("IF", "if"); }
+lerDouble { printToken("LER_DOUBLE", "lerDouble"); }
+main { printToken("MAIN", "main"); }
+public { printToken("PUBLIC", "public"); }
+static { printToken("STATIC", "static"); }
+void { printToken("VOID", "void"); }
+while { printToken("WHILE", "while"); }
 
-\+ { printToken("ADDITIVE_OPERATOR", NULL); }
-- { printToken("SUBTRACTION_OPERATOR", NULL); }
-\* { printToken("MULTIPLICATION_OPERATOR", NULL); }
-\/ { printToken("DIVISION_OPERATOR", NULL); }
+\+ { printToken("ADDITIVE_OPERATOR", "+"); }
+- { printToken("SUBTRACTION_OPERATOR", "-"); }
+\* { printToken("MULTIPLICATION_OPERATOR", "*"); }
+\/ { printToken("DIVISION_OPERATOR", "/"); }
 
-== { printToken("EQUAL", NULL); }
-!= { printToken("NOT_EQUAL", NULL); }
->= { printToken("GREATER_EQUAL", NULL); }
-\<= { printToken("LESS_EQUAL", NULL); }
-> { printToken("GREATER", NULL); }
-\< { printToken("LESS", NULL); }
+== { printToken("EQUAL", "=="); }
+!= { printToken("NOT_EQUAL", "!="); }
+>= { printToken("GREATER_EQUAL", ">="); }
+\<= { printToken("LESS_EQUAL", "<="); }
+> { printToken("GREATER", ">"); }
+\< { printToken("LESS", "<"); }
 
-= { printToken("ASSIGNMENT_OPERATOR", NULL); }
+= { printToken("ASSIGNMENT_OPERATOR", "="); }
 
-\{ { printToken("LEFT_CURLY_BRACKET", NULL); }
-\} { printToken("RIGHT_CURLY_BRACKET", NULL); }
-\( { printToken("LEFT_PARENTHESIS", NULL); }
-\) { printToken("RIGHT_PARENTHESIS", NULL); }
+\{ { printToken("LEFT_CURLY_BRACKET", "{"); }
+\} { printToken("RIGHT_CURLY_BRACKET", "}"); }
+\( { printToken("LEFT_PARENTHESIS", "("); }
+\) { printToken("RIGHT_PARENTHESIS", ")"); }
 
-; { printToken("SEMICOLON", NULL); }
-, { printToken("COMMA", NULL); }
+; { printToken("SEMICOLON", ";"); }
+, { printToken("COMMA", ","); }
 
 [A-Za-z_][0-9A-Za-z_]* { printToken("ID", yytext); }
 [0-9]+(\.[0-9]+)? { printToken("REAL_NUMBER", yytext); }
