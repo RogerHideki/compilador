@@ -218,8 +218,8 @@ void expIdent() {
         expressao();
         return;
     }
-    if (tokens[idx].token == "LERDOUBLE") {
-        match("LERDOUBLE");
+    if (tokens[idx].token == "LER_DOUBLE") {
+        match("LER_DOUBLE");
         match("LEFT_PARENTHESIS");
         match("RIGHT_PARENTHESIS");
     } else {
