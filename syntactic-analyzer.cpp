@@ -480,7 +480,7 @@ int main() {
         string token, line, column, lexeme = "";
         ss >> token >> line >> column >> lexeme;
         if (token == "ERROR") {
-            cout << "Erro léxico na linha " << line << ", coluna " << column << '.\n';
+            cout << "Erro léxico na linha " << line << ", coluna " << column << ".\n";
             return 0;
         }
         tokens.push_back({token, stoull(line), stoull(column), lexeme});
