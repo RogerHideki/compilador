@@ -1,4 +1,9 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <cstdlib>
 
 using namespace std;
 
@@ -83,8 +88,8 @@ void error() {
 
 void match(const string &expectedToken) {
     if (idx >= tokensSize) error();
-    if (tokens[idx].token == expectedToken) return idx++;
-    error();
+    if (tokens[idx].token != expectedToken) error();
+    idx++;
 }
 
 // ARGUMENTOS -> id <MAIS_IDENT>
@@ -118,7 +123,7 @@ void cmd() {
 
 // CMDS -> <CMD><MAIS_CMDS> | <CMD_COND><CMDS> | <DC> | λ
 void cmds() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "PRINTLN" ||
         tokens[idx].token == "ID") {
         cmd();
@@ -244,7 +249,7 @@ void fator() {
 
 // LISTA_ARG -> <ARGUMENTOS> | λ
 void listaArg() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "ID") {
         argumentos();
     }
@@ -263,7 +268,7 @@ void maisCmds() {
 
 // MAIS_FATORES -> <OP_MUL> <FATOR> <MAIS_FATORES> | λ
 void maisFatores() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "MULTIPLICATION_OPERATOR" ||
         tokens[idx].token == "DIVISION_OPERATOR") {
         opMul();
@@ -274,7 +279,7 @@ void maisFatores() {
 
 // MAIS_IDENT -> , <ARGUMENTOS> | λ
 void maisIdent() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "COMMA") {
         match("COMMA");
         argumentos();
@@ -283,7 +288,7 @@ void maisIdent() {
 
 // MAIS_VAR -> ,<VARS> | λ
 void maisVar() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "COMMA") {
         match("COMMA");
         vars();
@@ -320,7 +325,7 @@ void opMul() {
 
 // OP_UN -> - | λ
 void opUn() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
     }
@@ -328,7 +333,7 @@ void opUn() {
 
 // OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
 void outrosTermos() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "ADDITIVE_OPERATOR" ||
         tokens[idx].token == "SUBTRACTION_OPERATOR") {
         opAd();
@@ -339,7 +344,7 @@ void outrosTermos() {
 
 // PFALSA -> else { <CMDS> } | λ
 void pfalsa() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) return;
     if (tokens[idx].token == "ELSE") {
         match("ELSE");
         match("LEFT_CURLY_BRACKET");
@@ -475,12 +480,13 @@ int main() {
         string token, line, column, lexeme = "";
         ss >> token >> line >> column >> lexeme;
         if (token == "ERROR") {
-            cout << "Erro léxico na linha " << line << ", coluna " << column << '\n';
-            return 0; // TODO: VERIFICAR ESSA LINHA
+            cout << "Erro léxico na linha " << line << ", coluna " << column << '.\n';
+            return 0;
         }
         tokens.push_back({token, stoull(line), stoull(column), lexeme});
     }
     tokensSize = tokens.size();
     prog();
+    if (idx < tokensSize) error();
     return 0;
 }
