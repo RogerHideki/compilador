@@ -24,7 +24,8 @@ void error();
 
 void match(const string &expectedToken);
 
-void argumentos();
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// void argumentos();
 
 void cmd();
 
@@ -42,13 +43,15 @@ void expIdent();
 
 void fator();
 
-void listaArg();
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// void listaArg();
 
 void maisCmds();
 
 void maisFatores();
 
-void maisIdent();
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// void maisIdent();
 
 void maisVar();
 
@@ -92,16 +95,17 @@ void match(const string &expectedToken) {
     idx++;
 }
 
-// ARGUMENTOS -> id <MAIS_IDENT>
-void argumentos() {
-    if (idx >= tokensSize) error();
-    if (tokens[idx].token == "ID") {
-        match("ID");
-        maisIdent();
-    } else {
-        error();
-    }
-}
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// // ARGUMENTOS -> id <MAIS_IDENT>
+// void argumentos() {
+//     if (idx >= tokensSize) error();
+//     if (tokens[idx].token == "ID") {
+//         match("ID");
+//         maisIdent();
+//     } else {
+//         error();
+//     }
+// }
 
 // CMD -> System.out.println (<EXPRESSAO>) | id <RESTO_IDENT>
 void cmd() {
@@ -247,13 +251,14 @@ void fator() {
     }
 }
 
-// LISTA_ARG -> <ARGUMENTOS> | λ
-void listaArg() {
-    if (idx >= tokensSize) return;
-    if (tokens[idx].token == "ID") {
-        argumentos();
-    }
-}
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// // LISTA_ARG -> <ARGUMENTOS> | λ
+// void listaArg() {
+//     if (idx >= tokensSize) return;
+//     if (tokens[idx].token == "ID") {
+//         argumentos();
+//     }
+// }
 
 // MAIS_CMDS -> ;<CMDS>
 void maisCmds() {
@@ -277,14 +282,15 @@ void maisFatores() {
     }
 }
 
-// MAIS_IDENT -> , <ARGUMENTOS> | λ
-void maisIdent() {
-    if (idx >= tokensSize) return;
-    if (tokens[idx].token == "COMMA") {
-        match("COMMA");
-        argumentos();
-    }
-}
+// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+// // MAIS_IDENT -> , <ARGUMENTOS> | λ
+// void maisIdent() {
+//     if (idx >= tokensSize) return;
+//     if (tokens[idx].token == "COMMA") {
+//         match("COMMA");
+//         argumentos();
+//     }
+// }
 
 // MAIS_VAR -> ,<VARS> | λ
 void maisVar() {
@@ -416,11 +422,13 @@ void restoIdent() {
         expIdent();
         return;
     }
-    if (tokens[idx].token == "LEFT_PARENTHESIS") {
-        match("LEFT_PARENTHESIS");
-        listaArg();
-        match("RIGHT_PARENTHESIS");
-    } else {
+    // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+    // if (tokens[idx].token == "LEFT_PARENTHESIS") {
+    //     match("LEFT_PARENTHESIS");
+    //     listaArg();
+    //     match("RIGHT_PARENTHESIS");
+    // }
+    else {
         error();
     }
 }
