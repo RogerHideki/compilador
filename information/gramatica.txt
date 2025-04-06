@@ -9,12 +9,9 @@ MAIS_VAR      -> ,<VARS> | λ
 MAIS_CMDS     -> ;<CMDS>
 
 CMD           -> System.out.println (<EXPRESSAO>) 
-                 | id <RESTO_IDENT> 
-RESTO_IDENT   -> = <EXP_IDENT> | (<LISTA_ARG>)
+                 | id <RESTO_IDENT>
+RESTO_IDENT   -> = <EXP_IDENT>
 EXP_IDENT     -> <EXPRESSAO> | lerDouble()
-LISTA_ARG     -> <ARGUMENTOS> | λ
-ARGUMENTOS    -> id <MAIS_IDENT>
-MAIS_IDENT    -> , <ARGUMENTOS> | λ
 
 CMD_COND      -> if (  <CONDICAO> )  {<CMDS>} <PFALSA>
                  | while (  <CONDICAO> )  {<CMDS>}
