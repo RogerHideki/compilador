@@ -19,8 +19,18 @@ struct Token {
 vector<Token> tokens;
 ulli tokensSize;
 ulli idx = 0;
+map <string, vector<ulli>> symbolTable;
+map<ulli, vector<string>> scopeStack;
+ulli currentScope = 0;
 
-void error();
+
+void exitScope();
+
+void verifyVariableUsage();
+
+void declareDouble();
+
+void throwSyntaxError();
 
 void match(const string &expectedToken);
 
@@ -79,7 +89,34 @@ void var();
 
 void vars();
 
-void error() {
+void exitScope() {
+    for (auto &var: scopeStack[currentScope]) symbolTable[var].pop_back();
+    scopeStack.erase(currentScope);
+    currentScope--;
+}
+
+void verifyVariableUsage() {
+    string lexeme = tokens[idx].lexeme;
+    if (symbolTable[lexeme].size()) return;
+    cout << "Erro Semântico na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
+         << ". Variável não declarada: " << lexeme << ".\n";
+    exit(1);
+}
+
+void declareDouble() {
+    string lexeme = tokens[idx].lexeme;
+    auto &scopes = symbolTable[lexeme];
+    if (scopes.empty() || (scopes.back() != currentScope)) {
+        scopes.emplace_back(currentScope);
+        scopeStack[currentScope].emplace_back(lexeme);
+        return;
+    }
+    cout << "Erro Semântico na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
+         << ". Redeclaração no mesmo escopo: " << lexeme << ".\n";
+    exit(1);
+}
+
+void throwSyntaxError() {
     if (idx < tokensSize) {
         cout << "Erro de Sintaxe na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
              << ". Símbolo inesperado: " << tokens[idx].lexeme << ".\n";
@@ -90,26 +127,26 @@ void error() {
 }
 
 void match(const string &expectedToken) {
-    if (idx >= tokensSize) error();
-    if (tokens[idx].token != expectedToken) error();
+    if (idx >= tokensSize) throwSyntaxError();
+    if (tokens[idx].token != expectedToken) throwSyntaxError();
     idx++;
 }
 
 // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
 // // ARGUMENTOS -> id <MAIS_IDENT>
 // void argumentos() {
-//     if (idx >= tokensSize) error();
+//     if (idx >= tokensSize) throwSyntaxError();
 //     if (tokens[idx].token == "ID") {
 //         match("ID");
 //         maisIdent();
 //     } else {
-//         error();
+//         throwSyntaxError();
 //     }
 // }
 
 // CMD -> System.out.println (<EXPRESSAO>) | id <RESTO_IDENT>
 void cmd() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "PRINTLN") {
         match("PRINTLN");
         match("LEFT_PARENTHESIS");
@@ -118,10 +155,11 @@ void cmd() {
         return;
     }
     if (tokens[idx].token == "ID") {
+        verifyVariableUsage();
         match("ID");
         restoIdent();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
@@ -147,15 +185,17 @@ void cmds() {
 
 // CMD_COND -> if (  <CONDICAO> )  {<CMDS>} <PFALSA> | while (  <CONDICAO> )  {<CMDS>}
 void cmdCond() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "IF") {
         match("IF");
         match("LEFT_PARENTHESIS");
         condicao();
         match("RIGHT_PARENTHESIS");
         match("LEFT_CURLY_BRACKET");
+        currentScope++;
         cmds();
         match("RIGHT_CURLY_BRACKET");
+        exitScope();
         pfalsa();
         return;
     }
@@ -165,16 +205,18 @@ void cmdCond() {
         condicao();
         match("RIGHT_PARENTHESIS");
         match("LEFT_CURLY_BRACKET");
+        currentScope++;
         cmds();
         match("RIGHT_CURLY_BRACKET");
+        exitScope();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // CONDICAO -> <EXPRESSAO> <RELACAO> <EXPRESSAO>
 void condicao() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -183,24 +225,24 @@ void condicao() {
         relacao();
         expressao();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // DC -> <VAR> <MAIS_CMDS>
 void dc() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "DOUBLE") {
         var();
         maisCmds();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // EXPRESSAO -> <TERMO> <OUTROS_TERMOS>
 void expressao() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -208,13 +250,13 @@ void expressao() {
         termo();
         outrosTermos();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // EXP_IDENT -> <EXPRESSAO> | lerDouble()
 void expIdent() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -227,14 +269,15 @@ void expIdent() {
         match("LEFT_PARENTHESIS");
         match("RIGHT_PARENTHESIS");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // FATOR -> id | numero_real | (<EXPRESSAO>)
 void fator() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ID") {
+        verifyVariableUsage();
         match("ID");
         return;
     }
@@ -247,7 +290,7 @@ void fator() {
         expressao();
         match("RIGHT_PARENTHESIS");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
@@ -262,12 +305,12 @@ void fator() {
 
 // MAIS_CMDS -> ;<CMDS>
 void maisCmds() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "SEMICOLON") {
         match("SEMICOLON");
         cmds();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
@@ -303,7 +346,7 @@ void maisVar() {
 
 // OP_AD -> + | -
 void opAd() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ADDITIVE_OPERATOR") {
         match("ADDITIVE_OPERATOR");
         return;
@@ -311,13 +354,13 @@ void opAd() {
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // OP_MUL -> * | /
 void opMul() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "MULTIPLICATION_OPERATOR") {
         match("MULTIPLICATION_OPERATOR");
         return;
@@ -325,7 +368,7 @@ void opMul() {
     if (tokens[idx].token == "DIVISION_OPERATOR") {
         match("DIVISION_OPERATOR");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
@@ -354,14 +397,16 @@ void pfalsa() {
     if (tokens[idx].token == "ELSE") {
         match("ELSE");
         match("LEFT_CURLY_BRACKET");
+        currentScope++;
         cmds();
         match("RIGHT_CURLY_BRACKET");
+        exitScope();
     }
 }
 
 // PROG -> public class id {  public static void main ( String [ ] id ) {  <CMDS> } }
 void prog() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "PUBLIC") {
         match("PUBLIC");
         match("CLASS");
@@ -380,13 +425,13 @@ void prog() {
         match("RIGHT_CURLY_BRACKET");
         match("RIGHT_CURLY_BRACKET");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // RELACAO -> == | != | >= | <= | > | <
 void relacao() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "EQUAL") {
         match("EQUAL");
         return;
@@ -410,32 +455,32 @@ void relacao() {
     if (tokens[idx].token == "LESS") {
         match("LESS");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // RESTO_IDENT -> = <EXP_IDENT> | (<LISTA_ARG>)
 void restoIdent() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ASSIGNMENT_OPERATOR") {
         match("ASSIGNMENT_OPERATOR");
         expIdent();
         return;
     }
-    // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-    // if (tokens[idx].token == "LEFT_PARENTHESIS") {
-    //     match("LEFT_PARENTHESIS");
-    //     listaArg();
-    //     match("RIGHT_PARENTHESIS");
-    // }
+        // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
+        // if (tokens[idx].token == "LEFT_PARENTHESIS") {
+        //     match("LEFT_PARENTHESIS");
+        //     listaArg();
+        //     match("RIGHT_PARENTHESIS");
+        // }
     else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // TERMO -> <OP_UN> <FATOR> <MAIS_FATORES>
 void termo() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "SUBTRACTION_OPERATOR" ||
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
@@ -444,39 +489,40 @@ void termo() {
         fator();
         maisFatores();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // TIPO -> double
 void tipo() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "DOUBLE") {
         match("DOUBLE");
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // VAR -> <TIPO> <VARS>
 void var() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "DOUBLE") {
         tipo();
         vars();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
 // VARS -> id<MAIS_VAR>
 void vars() {
-    if (idx >= tokensSize) error();
+    if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ID") {
+        declareDouble();
         match("ID");
         maisVar();
     } else {
-        error();
+        throwSyntaxError();
     }
 }
 
@@ -495,6 +541,6 @@ int main() {
     }
     tokensSize = tokens.size();
     prog();
-    if (idx < tokensSize) error();
+    if (idx < tokensSize) throwSyntaxError();
     return 0;
 }
