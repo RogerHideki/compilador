@@ -1,5 +1,8 @@
 {
   "files.associations": {
+    "*.sqlbook": "sql",
+    "*.ndjson": "jsonl",
+    "*.dbclient-js": "javascript",
     "deque": "cpp",
     "string": "cpp",
     "vector": "cpp",
@@ -7,6 +10,10 @@
     "fstream": "cpp",
     "sstream": "cpp",
     "regex": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "cstdlib": "cpp",
+    "*.tcc": "cpp",
+    "complex": "cpp",
+    "ostream": "cpp"
   }
 }

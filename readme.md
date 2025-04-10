@@ -4,7 +4,7 @@
    - cat ./lex-input.txt | ./lex.exe > ./lex-output.txt
 
    - g++ ./syntactic-analyzer.cpp -o ./syntactic-analyzer.exe
-   - cat ./lex-output.txt | ./syntactic-analyzer.exe > ./syntactic-analyzer-output.txt
+   - ./syntactic-analyzer.exe
    
 - trabalho-2
    - g++ ./trabalho-2.cpp -o ./trabalho-2.exe

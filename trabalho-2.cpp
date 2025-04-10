@@ -36,13 +36,14 @@ void cmai() {
     d.pop_back();
 }
 
-// Conjunção de valores lógicos. F=0; V=1
-void conj() {
-    if (d[s - 1] && d[s]) d[s - 1] = 1;
-    else d[s - 1] = 0;
-    s--;
-    d.pop_back();
-}
+// REMOVIDO POR CONTA DA GRAMATICA
+// // Conjunção de valores lógicos. F=0; V=1
+// void conj() {
+//     if (d[s - 1] && d[s]) d[s - 1] = 1;
+//     else d[s - 1] = 0;
+//     s--;
+//     d.pop_back();
+// }
 
 // Comparação de igualdade
 void cpig() {
@@ -88,13 +89,14 @@ void crvl(int n) {
     d.emplace_back(d[n]);
 }
 
-// Disjunção de valores lógicos
-void disj() {
-    if (d[s - 1] || d[s]) d[s - 1] = 1;
-    else d[s - 1] = 0;
-    s--;
-    d.pop_back();
-}
+// REMOVIDO POR CONTA DA GRAMATICA
+// // Disjunção de valores lógicos
+// void disj() {
+//     if (d[s - 1] || d[s]) d[s - 1] = 1;
+//     else d[s - 1] = 0;
+//     s--;
+//     d.pop_back();
+// }
 
 // Divide o elemento antecessor pelo elemento do topo
 void divi() {
@@ -148,10 +150,11 @@ void mult() {
     d.pop_back();
 }
 
-// Negação lógica
-void nega() {
-    d[s] = 1 - d[s];
-}
+// REMOVIDO POR CONTA DA GRAMATICA
+// // Negação lógica
+// void nega() {
+//     d[s] = 1 - d[s];
+// }
 
 // Termina a execução do programa
 void para() {
@@ -224,7 +227,7 @@ int main() {
                 cmai();
                 break;
             case 4:
-                conj();
+                // conj();
                 break;
             case 5:
                 cpig();
@@ -245,7 +248,7 @@ int main() {
                 crvl(objectCode[i].second);
                 break;
             case 11:
-                disj();
+                // disj();
                 break;
             case 12:
                 divi();
@@ -272,7 +275,7 @@ int main() {
                 mult();
                 break;
             case 20:
-                nega();
+                // nega();
                 break;
             case 21:
                 para();

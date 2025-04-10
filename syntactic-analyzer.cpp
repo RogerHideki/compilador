@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <map>
+#include <stack>
 
 using namespace std;
 
@@ -16,13 +18,22 @@ struct Token {
     string lexeme;
 };
 
+struct SymbolInfo {
+    ulli scope;
+    string memoryIdx;
+};
+
 vector<Token> tokens;
 ulli tokensSize;
 ulli idx = 0;
-map <string, vector<ulli>> symbolTable;
+map<string, vector<SymbolInfo>> symbolTable;
+ulli currentMemoryIdx = 0;
 map<ulli, vector<string>> scopeStack;
 ulli currentScope = 0;
 
+vector<string> objectCode;
+stack<string> objectCodeStack;
+ofstream objectCodeFile("object-code.txt");
 
 void exitScope();
 
@@ -69,11 +80,11 @@ void opAd();
 
 void opMul();
 
-void opUn();
+bool opUn();
 
 void outrosTermos();
 
-void pfalsa();
+void pfalsa(ulli objectCodeIfIdx);
 
 void prog();
 
@@ -90,7 +101,10 @@ void var();
 void vars();
 
 void exitScope() {
-    for (auto &var: scopeStack[currentScope]) symbolTable[var].pop_back();
+    for (auto &var: scopeStack[currentScope]) {
+        symbolTable[var].pop_back();
+        currentMemoryIdx--;
+    }
     scopeStack.erase(currentScope);
     currentScope--;
 }
@@ -106,9 +120,11 @@ void verifyVariableUsage() {
 void declareDouble() {
     string lexeme = tokens[idx].lexeme;
     auto &scopes = symbolTable[lexeme];
-    if (scopes.empty() || (scopes.back() != currentScope)) {
-        scopes.emplace_back(currentScope);
+    if (scopes.empty() || (scopes.back().scope != currentScope)) {
+        scopes.push_back({currentScope, to_string(currentMemoryIdx)});
+        currentMemoryIdx++;
         scopeStack[currentScope].emplace_back(lexeme);
+        objectCode.emplace_back("ALME 1");
         return;
     }
     cout << "Erro Semântico na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
@@ -152,10 +168,12 @@ void cmd() {
         match("LEFT_PARENTHESIS");
         expressao();
         match("RIGHT_PARENTHESIS");
+        objectCode.emplace_back("IMPR");
         return;
     }
     if (tokens[idx].token == "ID") {
         verifyVariableUsage();
+        objectCodeStack.emplace("ARMZ " + symbolTable[tokens[idx].lexeme].back().memoryIdx);
         match("ID");
         restoIdent();
     } else {
@@ -193,22 +211,30 @@ void cmdCond() {
         match("RIGHT_PARENTHESIS");
         match("LEFT_CURLY_BRACKET");
         currentScope++;
+        ulli objectCodeIfIdx = objectCode.size();
+        objectCode.emplace_back("DSVF ");
         cmds();
         match("RIGHT_CURLY_BRACKET");
         exitScope();
-        pfalsa();
+        objectCode[objectCodeIfIdx] += to_string(objectCode.size());
+        pfalsa(objectCodeIfIdx);
         return;
     }
     if (tokens[idx].token == "WHILE") {
         match("WHILE");
         match("LEFT_PARENTHESIS");
+        ulli objectCodeConditionIdx = objectCode.size();
         condicao();
         match("RIGHT_PARENTHESIS");
         match("LEFT_CURLY_BRACKET");
         currentScope++;
+        ulli objectCodeWhileIdx = objectCode.size();
+        objectCode.emplace_back("DSVF ");
         cmds();
         match("RIGHT_CURLY_BRACKET");
         exitScope();
+        objectCode.emplace_back("DSVI " + to_string(objectCodeConditionIdx));
+        objectCode[objectCodeWhileIdx] += to_string(objectCode.size());
     } else {
         throwSyntaxError();
     }
@@ -224,6 +250,8 @@ void condicao() {
         expressao();
         relacao();
         expressao();
+        objectCode.emplace_back(objectCodeStack.top());
+        objectCodeStack.pop();
     } else {
         throwSyntaxError();
     }
@@ -268,6 +296,7 @@ void expIdent() {
         match("LER_DOUBLE");
         match("LEFT_PARENTHESIS");
         match("RIGHT_PARENTHESIS");
+        objectCode.emplace_back("LEIT");
     } else {
         throwSyntaxError();
     }
@@ -278,10 +307,12 @@ void fator() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ID") {
         verifyVariableUsage();
+        objectCode.emplace_back("CRVL " + symbolTable[tokens[idx].lexeme].back().memoryIdx);
         match("ID");
         return;
     }
     if (tokens[idx].token == "REAL_NUMBER") {
+        objectCode.emplace_back("CRCT " + tokens[idx].lexeme);
         match("REAL_NUMBER");
         return;
     }
@@ -349,10 +380,12 @@ void opAd() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ADDITIVE_OPERATOR") {
         match("ADDITIVE_OPERATOR");
+        objectCodeStack.emplace("SOMA");
         return;
     }
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
+        objectCodeStack.emplace("SUBT");
     } else {
         throwSyntaxError();
     }
@@ -363,21 +396,25 @@ void opMul() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "MULTIPLICATION_OPERATOR") {
         match("MULTIPLICATION_OPERATOR");
+        objectCodeStack.emplace("MULT");
         return;
     }
     if (tokens[idx].token == "DIVISION_OPERATOR") {
         match("DIVISION_OPERATOR");
+        objectCodeStack.emplace("DIVI");
     } else {
         throwSyntaxError();
     }
 }
 
 // OP_UN -> - | λ
-void opUn() {
-    if (idx >= tokensSize) return;
+bool opUn() {
+    if (idx >= tokensSize) return 0;
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
+        return 1;
     }
+    return 0;
 }
 
 // OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
@@ -387,20 +424,26 @@ void outrosTermos() {
         tokens[idx].token == "SUBTRACTION_OPERATOR") {
         opAd();
         termo();
+        objectCode.emplace_back(objectCodeStack.top());
+        objectCodeStack.pop();
         outrosTermos();
     }
 }
 
 // PFALSA -> else { <CMDS> } | λ
-void pfalsa() {
+void pfalsa(ulli objectCodeIfIdx) {
     if (idx >= tokensSize) return;
     if (tokens[idx].token == "ELSE") {
         match("ELSE");
         match("LEFT_CURLY_BRACKET");
         currentScope++;
+        ulli objectCodeElseIdx = objectCode.size();
+        objectCode.emplace_back("DSVI ");
+        objectCode[objectCodeIfIdx] = ("DSVF " + to_string(objectCode.size()));
         cmds();
         match("RIGHT_CURLY_BRACKET");
         exitScope();
+        objectCode[objectCodeElseIdx] += to_string(objectCode.size());
     }
 }
 
@@ -421,9 +464,11 @@ void prog() {
         match("ID");
         match("RIGHT_PARENTHESIS");
         match("LEFT_CURLY_BRACKET");
+        objectCode.emplace_back("INPP");
         cmds();
         match("RIGHT_CURLY_BRACKET");
         match("RIGHT_CURLY_BRACKET");
+        objectCode.emplace_back("PARA");
     } else {
         throwSyntaxError();
     }
@@ -434,26 +479,32 @@ void relacao() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "EQUAL") {
         match("EQUAL");
+        objectCodeStack.emplace("CPIG");
         return;
     }
     if (tokens[idx].token == "NOT_EQUAL") {
         match("NOT_EQUAL");
+        objectCodeStack.emplace("CDES");
         return;
     }
     if (tokens[idx].token == "GREATER_EQUAL") {
         match("GREATER_EQUAL");
+        objectCodeStack.emplace("CMAI");
         return;
     }
     if (tokens[idx].token == "LESS_EQUAL") {
         match("LESS_EQUAL");
+        objectCodeStack.emplace("CPMI");
         return;
     }
     if (tokens[idx].token == "GREATER") {
         match("GREATER");
+        objectCodeStack.emplace("CPMA");
         return;
     }
     if (tokens[idx].token == "LESS") {
         match("LESS");
+        objectCodeStack.emplace("CPME");
     } else {
         throwSyntaxError();
     }
@@ -465,6 +516,8 @@ void restoIdent() {
     if (tokens[idx].token == "ASSIGNMENT_OPERATOR") {
         match("ASSIGNMENT_OPERATOR");
         expIdent();
+        objectCode.emplace_back(objectCodeStack.top());
+        objectCodeStack.pop();
         return;
     }
         // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
@@ -485,8 +538,9 @@ void termo() {
         tokens[idx].token == "ID" ||
         tokens[idx].token == "REAL_NUMBER" ||
         tokens[idx].token == "LEFT_PARENTHESIS") {
-        opUn();
+        bool mustInvertSign = opUn();
         fator();
+        if (mustInvertSign) objectCode.emplace_back("INVE");
         maisFatores();
     } else {
         throwSyntaxError();
@@ -542,5 +596,6 @@ int main() {
     tokensSize = tokens.size();
     prog();
     if (idx < tokensSize) throwSyntaxError();
+    for (auto &instruction: objectCode) objectCodeFile << instruction << '\n';
     return 0;
 }
