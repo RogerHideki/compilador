@@ -1,0 +1,13 @@
+public class Teste {
+    public static void main(String[] args) {
+        double n;
+        n = lerDouble();
+        double ans;
+        ans = 1;
+        while (n > 1) {
+            ans = ans * n;
+            n = n - 1;
+        }
+        System.out.println(ans);
+    }
+}
