@@ -33,9 +33,11 @@ ulli currentScope = 0;
 
 vector<string> objectCode;
 stack<string> objectCodeStack;
-ofstream objectCodeFile("object-code.txt");
+ofstream objectCodeFile("outputs/object-code.txt");
 
 void exitScope();
+
+void throwSemanticError(const string &errorMessage, ulli tokenIdxOffset);
 
 void verifyVariableUsage();
 
@@ -45,8 +47,7 @@ void throwSyntaxError();
 
 void match(const string &expectedToken);
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// void argumentos();
+void argumentos();
 
 void cmd();
 
@@ -64,15 +65,13 @@ void expIdent();
 
 void fator();
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// void listaArg();
+void listaArg();
 
 void maisCmds();
 
 void maisFatores();
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// void maisIdent();
+void maisIdent();
 
 void maisVar();
 
@@ -109,12 +108,15 @@ void exitScope() {
     currentScope--;
 }
 
-void verifyVariableUsage() {
-    string lexeme = tokens[idx].lexeme;
-    if (symbolTable[lexeme].size()) return;
-    cout << "Erro Semântico na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
-         << ". Variável não declarada: " << lexeme << ".\n";
+void throwSemanticError(const string &errorMessage, ulli tokenIdxOffset) {
+    auto [token, line, column, lexeme] = tokens[idx - tokenIdxOffset];
+    cout << "Erro Semântico na linha " << line << ", coluna " << column << errorMessage << lexeme << ".\n";
     exit(1);
+}
+
+void verifyVariableUsage() {
+    if (symbolTable[tokens[idx].lexeme].size()) return;
+    throwSemanticError(". Variável não declarada: ", 0);
 }
 
 void declareDouble() {
@@ -127,9 +129,7 @@ void declareDouble() {
         objectCode.emplace_back("ALME 1");
         return;
     }
-    cout << "Erro Semântico na linha " << tokens[idx].line << ", coluna " << tokens[idx].column
-         << ". Redeclaração no mesmo escopo: " << lexeme << ".\n";
-    exit(1);
+    throwSemanticError(". Redeclaração no mesmo escopo: ", 0);
 }
 
 void throwSyntaxError() {
@@ -148,17 +148,16 @@ void match(const string &expectedToken) {
     idx++;
 }
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// // ARGUMENTOS -> id <MAIS_IDENT>
-// void argumentos() {
-//     if (idx >= tokensSize) throwSyntaxError();
-//     if (tokens[idx].token == "ID") {
-//         match("ID");
-//         maisIdent();
-//     } else {
-//         throwSyntaxError();
-//     }
-// }
+// ARGUMENTOS -> id <MAIS_IDENT>
+void argumentos() {
+    if (idx >= tokensSize) throwSyntaxError();
+    if (tokens[idx].token == "ID") {
+        match("ID");
+        maisIdent();
+    } else {
+        throwSyntaxError();
+    }
+}
 
 // CMD -> System.out.println (<EXPRESSAO>) | id <RESTO_IDENT>
 void cmd() {
@@ -325,14 +324,13 @@ void fator() {
     }
 }
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// // LISTA_ARG -> <ARGUMENTOS> | λ
-// void listaArg() {
-//     if (idx >= tokensSize) return;
-//     if (tokens[idx].token == "ID") {
-//         argumentos();
-//     }
-// }
+// LISTA_ARG -> <ARGUMENTOS> | λ
+void listaArg() {
+    if (idx >= tokensSize) return;
+    if (tokens[idx].token == "ID") {
+        argumentos();
+    }
+}
 
 // MAIS_CMDS -> ;<CMDS>
 void maisCmds() {
@@ -356,15 +354,14 @@ void maisFatores() {
     }
 }
 
-// TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-// // MAIS_IDENT -> , <ARGUMENTOS> | λ
-// void maisIdent() {
-//     if (idx >= tokensSize) return;
-//     if (tokens[idx].token == "COMMA") {
-//         match("COMMA");
-//         argumentos();
-//     }
-// }
+// MAIS_IDENT -> , <ARGUMENTOS> | λ
+void maisIdent() {
+    if (idx >= tokensSize) return;
+    if (tokens[idx].token == "COMMA") {
+        match("COMMA");
+        argumentos();
+    }
+}
 
 // MAIS_VAR -> ,<VARS> | λ
 void maisVar() {
@@ -409,12 +406,12 @@ void opMul() {
 
 // OP_UN -> - | λ
 bool opUn() {
-    if (idx >= tokensSize) return 0;
+    if (idx >= tokensSize) return false;
     if (tokens[idx].token == "SUBTRACTION_OPERATOR") {
         match("SUBTRACTION_OPERATOR");
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 // OUTROS_TERMOS -> <OP_AD> <TERMO> <OUTROS_TERMOS> | λ
@@ -520,13 +517,12 @@ void restoIdent() {
         objectCodeStack.pop();
         return;
     }
-        // TODO: REMOVER SE O PROFESSOR APROVAR A CORRECAO DA GRAMATICA
-        // if (tokens[idx].token == "LEFT_PARENTHESIS") {
-        //     match("LEFT_PARENTHESIS");
-        //     listaArg();
-        //     match("RIGHT_PARENTHESIS");
-        // }
-    else {
+    if (tokens[idx].token == "LEFT_PARENTHESIS") {
+        throwSemanticError(". Método não declarado: ", 1);
+        match("LEFT_PARENTHESIS");
+        listaArg();
+        match("RIGHT_PARENTHESIS");
+    } else {
         throwSyntaxError();
     }
 }

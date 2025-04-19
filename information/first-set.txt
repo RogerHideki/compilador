@@ -1,26 +1,30 @@
-primeiros(ARGUMENTOS)       -> id
-primeiros(CMD)              -> System.out.println | id
+primeiros(PROG)             -> public
 primeiros(CMDS)             -> System.out.println | id | if | while | double | λ
+
+primeiros(DC)               -> double
+primeiros(VAR)              -> double
+primeiros(TIPO)             -> double
+primeiros(VARS)             -> id
+primeiros(MAIS_VAR)         -> , | λ
+primeiros(MAIS_CMDS)        -> ;
+
+primeiros(CMD)              -> System.out.println | id
+primeiros(RESTO_IDENT)      -> = | (
+primeiros(EXP_IDENT)        -> - | id | numero_real | ( | lerDouble
+primeiros(LISTA_ARG)        -> id | λ
+primeiros(ARGUMENTOS)       -> id
+primeiros(MAIS_IDENT)       -> , | λ
+
 primeiros(CMD_COND)         -> if | while
 primeiros(CONDICAO)         -> - | id | numero_real | (
-primeiros(DC)               -> double
-primeiros(EXPRESSAO)        -> - | id | numero_real | (
-primeiros(EXP_IDENT)        -> - | id | numero_real | ( | lerDouble
-primeiros(FATOR)            -> id | numero_real | (
-primeiros(LISTA_ARG)        -> id | λ
-primeiros(MAIS_CMDS)        -> ;
-primeiros(MAIS_FATORES)     -> * | / | λ
-primeiros(MAIS_IDENT)       -> , | λ
-primeiros(MAIS_VAR)         -> , | λ
-primeiros(OP_AD)            -> + | -
-primeiros(OP_MUL)           -> * | /
-primeiros(OP_UN)            -> - | λ
-primeiros(OUTROS_TERMOS)    -> + | - | λ
-primeiros(PFALSA)           -> else | λ
-primeiros(PROG)             -> public
 primeiros(RELACAO)          -> == | != | >= | <= | > | <
-primeiros(RESTO_IDENT)      -> = | (
+primeiros(PFALSA)           -> else | λ
+
+primeiros(EXPRESSAO)        -> - | id | numero_real | (
 primeiros(TERMO)            -> - | id | numero_real | (
-primeiros(TIPO)             -> double
-primeiros(VAR)              -> double
-primeiros(VARS)             -> id
+primeiros(OP_UN)            -> - | λ
+primeiros(FATOR)            -> id | numero_real | (
+primeiros(OUTROS_TERMOS)    -> + | - | λ
+primeiros(OP_AD)            -> + | -
+primeiros(MAIS_FATORES)     -> * | / | λ
+primeiros(OP_MUL)           -> * | /
