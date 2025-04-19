@@ -2,69 +2,71 @@
 
 using namespace std;
 
+#define ulli unsigned long long int
+
 vector<double> d;
-int i = 0;
-int s;
-int objectCodeSize;
+ulli i = 0;
+ulli s;
+ulli objectCodeSize;
 
 // Reserva m posições na pilha D; m depende do tipo da variável
-void alme(int m) {
+void alme(ulli m) {
     d.resize(d.size() + m);
     s += m;
 }
 
 // Armazena o topo da pilha no endereço n de D
-void armz(int n) {
-    d[n] = d[s];
+void armz(ulli n) {
     s--;
+    d[n] = d[s];
     d.pop_back();
 }
 
 // Comparação de desigualdade
 void cdes() {
+    s--;
     if (d[s - 1] != d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
 // Comparação maior-igual
 void cmai() {
+    s--;
     if (d[s - 1] >= d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
 // Comparação de igualdade
 void cpig() {
+    s--;
     if (d[s - 1] == d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
 // Comparação de maior
 void cpma() {
+    s--;
     if (d[s - 1] > d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
 // Comparação de menor entre o antecessor e o topo
 void cpme() {
+    s--;
     if (d[s - 1] < d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
 // Comparação menor-igual
 void cpmi() {
+    s--;
     if (d[s - 1] <= d[s]) d[s - 1] = 1;
     else d[s - 1] = 0;
-    s--;
     d.pop_back();
 }
 
@@ -75,46 +77,46 @@ void crct(double k) {
 }
 
 // Carrega valor de endereço n no topo da pilha D
-void crvl(int n) {
+void crvl(ulli n) {
     s++;
     d.emplace_back(d[n]);
 }
 
 // Divide o elemento antecessor pelo elemento do topo
 void divi() {
-    d[s - 1] /= d[s];
     s--;
+    d[s - 1] /= d[s];
     d.pop_back();
 }
 
 // Desvio condicional para a instrução de endereço p; o desvio será executado
 // caso a condição resultante seja falsa; o valor da condição estará no topo
-void dsvf(int p) {
-    if (!d[s]) i = p - 1;
+void dsvf(ulli p) {
     s--;
+    if (!d[s]) i = p - 1;
     d.pop_back();
 }
 
 // Desvio incondicional para a instrução de endereço p
-void dsvi(int p) {
+void dsvi(ulli p) {
     i = p - 1;
 }
 
 // Imprime valor o valor do topo da pilha na saída
 void impr() {
-    cout << d[s] << '\n';
     s--;
+    cout << d[s] << '\n';
     d.pop_back();
 }
 
 // Inicia programa – será sempre a 1ª instrução
 void inpp() {
-    s = -1;
+    s = 0;
 }
 
 // Inverte sinal do topo
 void inve() {
-    d[s] *= -1;
+    d[s - 1] *= -1;
 }
 
 // Lê um dado de entrada para o topo da pilha
@@ -127,8 +129,8 @@ void leit() {
 
 // Multiplica elemento antecessor pelo elemento do topo
 void mult() {
-    d[s - 1] *= d[s];
     s--;
+    d[s - 1] *= d[s];
     d.pop_back();
 }
 
@@ -139,15 +141,15 @@ void para() {
 
 // Soma o elemento antecessor com o topo da pilha; desempilha os dois e empilha o resultado
 void soma() {
-    d[s - 1] += d[s];
     s--;
+    d[s - 1] += d[s];
     d.pop_back();
 }
 
 // Subtrai o antecessor pelo elemento do topo
 void subt() {
-    d[s - 1] -= d[s];
     s--;
+    d[s - 1] -= d[s];
     d.pop_back();
 }
 
