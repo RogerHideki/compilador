@@ -1,12 +1,13 @@
 %{
 #include <stdio.h>
 
+FILE *tokensFile;
 unsigned long long int line, column;
 
 void printToken(const char *token, const char *lexeme) {
-  printf("%s %llu %llu", token, line, column);
-  if (lexeme) printf(" %s", lexeme);
-  printf("\n");
+  fprintf(tokensFile, "%s %llu %llu", token, line, column);
+  if (lexeme) fprintf(tokensFile, " %s", lexeme);
+  fprintf(tokensFile, "\n");
   column += yyleng;
 }
 %}
@@ -62,7 +63,11 @@ while { printToken("WHILE", "while"); }
 int yywrap() { return 1; }
 
 int main() {
+  yyin = fopen("inputs/lex-input-mini-java-exemplo.txt", "r");
+  tokensFile = fopen("outputs/tokens.txt", "w");
   line = column = 1;
   yylex();
+  fclose(tokensFile);
+  fclose(yyin);
   return 0;
 }

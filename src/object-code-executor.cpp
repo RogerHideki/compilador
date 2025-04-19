@@ -36,15 +36,6 @@ void cmai() {
     d.pop_back();
 }
 
-// REMOVIDO POR CONTA DA GRAMATICA
-// // Conjunção de valores lógicos. F=0; V=1
-// void conj() {
-//     if (d[s - 1] && d[s]) d[s - 1] = 1;
-//     else d[s - 1] = 0;
-//     s--;
-//     d.pop_back();
-// }
-
 // Comparação de igualdade
 void cpig() {
     if (d[s - 1] == d[s]) d[s - 1] = 1;
@@ -88,15 +79,6 @@ void crvl(int n) {
     s++;
     d.emplace_back(d[n]);
 }
-
-// REMOVIDO POR CONTA DA GRAMATICA
-// // Disjunção de valores lógicos
-// void disj() {
-//     if (d[s - 1] || d[s]) d[s - 1] = 1;
-//     else d[s - 1] = 0;
-//     s--;
-//     d.pop_back();
-// }
 
 // Divide o elemento antecessor pelo elemento do topo
 void divi() {
@@ -150,12 +132,6 @@ void mult() {
     d.pop_back();
 }
 
-// REMOVIDO POR CONTA DA GRAMATICA
-// // Negação lógica
-// void nega() {
-//     d[s] = 1 - d[s];
-// }
-
 // Termina a execução do programa
 void para() {
     i = objectCodeSize;
@@ -176,7 +152,7 @@ void subt() {
 }
 
 int main() {
-    ifstream inputFile("object-code.txt");
+    ifstream objectCodeFile("outputs/object-code.txt");
     string line;
     vector<pair<int, double>> objectCode;
     map<string, int> m;
@@ -184,33 +160,30 @@ int main() {
     m["ARMZ"] = 1;
     m["CDES"] = 2;
     m["CMAI"] = 3;
-    m["CONJ"] = 4;
-    m["CPIG"] = 5;
-    m["CPMA"] = 6;
-    m["CPME"] = 7;
-    m["CPMI"] = 8;
-    m["CRCT"] = 9;
-    m["CRVL"] = 10;
-    m["DISJ"] = 11;
-    m["DIVI"] = 12;
-    m["DSVF"] = 13;
-    m["DSVI"] = 14;
-    m["IMPR"] = 15;
-    m["INPP"] = 16;
-    m["INVE"] = 17;
-    m["LEIT"] = 18;
-    m["MULT"] = 19;
-    m["NEGA"] = 20;
-    m["PARA"] = 21;
-    m["SOMA"] = 22;
-    m["SUBT"] = 23;
-    while (getline(inputFile, line)) {
+    m["CPIG"] = 4;
+    m["CPMA"] = 5;
+    m["CPME"] = 6;
+    m["CPMI"] = 7;
+    m["CRCT"] = 8;
+    m["CRVL"] = 9;
+    m["DIVI"] = 10;
+    m["DSVF"] = 11;
+    m["DSVI"] = 12;
+    m["IMPR"] = 13;
+    m["INPP"] = 14;
+    m["INVE"] = 15;
+    m["LEIT"] = 16;
+    m["MULT"] = 17;
+    m["PARA"] = 18;
+    m["SOMA"] = 19;
+    m["SUBT"] = 20;
+    while (getline(objectCodeFile, line)) {
         stringstream ss(line);
         string first, second = "";
         ss >> first >> second;
         objectCode.emplace_back(m[first], second != "" ? stod(second) : 0);
     }
-    inputFile.close();
+    objectCodeFile.close();
     objectCodeSize = objectCode.size();
     while (i < objectCodeSize) {
         switch (objectCode[i].first) {
@@ -227,63 +200,54 @@ int main() {
                 cmai();
                 break;
             case 4:
-                // conj();
-                break;
-            case 5:
                 cpig();
                 break;
-            case 6:
+            case 5:
                 cpma();
                 break;
-            case 7:
+            case 6:
                 cpme();
                 break;
-            case 8:
+            case 7:
                 cpmi();
                 break;
-            case 9:
+            case 8:
                 crct(objectCode[i].second);
                 break;
-            case 10:
+            case 9:
                 crvl(objectCode[i].second);
                 break;
-            case 11:
-                // disj();
-                break;
-            case 12:
+            case 10:
                 divi();
                 break;
-            case 13:
+            case 11:
                 dsvf(objectCode[i].second);
                 break;
-            case 14:
+            case 12:
                 dsvi(objectCode[i].second);
                 break;
-            case 15:
+            case 13:
                 impr();
                 break;
-            case 16:
+            case 14:
                 inpp();
                 break;
-            case 17:
+            case 15:
                 inve();
                 break;
-            case 18:
+            case 16:
                 leit();
                 break;
-            case 19:
+            case 17:
                 mult();
                 break;
-            case 20:
-                // nega();
-                break;
-            case 21:
+            case 18:
                 para();
                 break;
-            case 22:
+            case 19:
                 soma();
                 break;
-            case 23:
+            case 20:
                 subt();
                 break;
         }

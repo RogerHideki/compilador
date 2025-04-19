@@ -577,10 +577,10 @@ void vars() {
 }
 
 int main() {
-    ifstream inputFile("lex-output.txt");
-    string inputFileLine;
-    while (getline(inputFile, inputFileLine)) {
-        stringstream ss(inputFileLine);
+    ifstream tokensFile("outputs/tokens.txt");
+    string tokensFileLine;
+    while (getline(tokensFile, tokensFileLine)) {
+        stringstream ss(tokensFileLine);
         string token, line, column, lexeme = "";
         ss >> token >> line >> column >> lexeme;
         if (token == "ERROR") {
