@@ -1,0 +1,9 @@
+public class Teste {
+    public static void main(String[] args) {
+        double a, b, x;
+        a = lerDouble();
+        b = lerDouble();
+        x = a + b;
+        System.out.println(x);
+    }
+}
