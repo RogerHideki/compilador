@@ -63,7 +63,7 @@ while { printToken("WHILE", "while"); }
 int yywrap() { return 1; }
 
 int main() {
-  yyin = fopen("inputs/lex-input-mini-java-exemplo.txt", "r");
+  yyin = fopen("inputs/mini-java-exemplo.txt", "r");
   tokensFile = fopen("outputs/tokens.txt", "w");
   line = column = 1;
   yylex();
