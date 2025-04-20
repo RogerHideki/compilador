@@ -350,6 +350,8 @@ void maisFatores() {
         tokens[idx].token == "DIVISION_OPERATOR") {
         opMul();
         fator();
+        objectCode.emplace_back(objectCodeStack.top());
+        objectCodeStack.pop();
         maisFatores();
     }
 }
