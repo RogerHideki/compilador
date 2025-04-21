@@ -105,7 +105,7 @@ void dsvi(ulli p) {
 // Imprime valor o valor do topo da pilha na saída
 void impr() {
     s--;
-    cout << d[s] << '\n';
+    cout << setprecision(17) << d[s] << '\n';
     d.pop_back();
 }
 

@@ -15,6 +15,7 @@
     "*.tcc": "cpp",
     "complex": "cpp",
     "ostream": "cpp",
-    "source_location": "cpp"
+    "source_location": "cpp",
+    "iomanip": "cpp"
   }
 }
