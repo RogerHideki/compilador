@@ -1,0 +1,9 @@
+public class Teste {
+    public static void main(String[] args) {
+        double a, b, c, d, diferenca;
+        a = lerDouble();
+        b = lerDouble();
+        diferenca = a * b - c * d;
+        System.out.println(diferenca);
+    }
+}

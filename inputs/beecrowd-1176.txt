@@ -1,0 +1,17 @@
+public class Teste {
+    public static void main(String[] args) {
+        double t;
+        t = lerDouble();
+        while (t > 0) {
+            double n, prev, fib;
+            n = lerDouble();
+            prev = 1;
+            fib = 0;
+            while (n > 0) {
+                fib = fib + prev;
+                prev = fib - prev;
+            }
+            System.out.println(fib);
+        }
+    }
+}

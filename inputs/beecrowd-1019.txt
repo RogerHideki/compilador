@@ -1,0 +1,19 @@
+public class Teste {
+    public static void main(String[] args) {
+        double s, m, h;
+        s = lerDouble();
+        m = 0;
+        h = 0;
+        while (s >= 60) {
+            m = m + 1;
+            s = s - 60;
+        }
+        while (m >= 60) {
+            h = h + 1;
+            m = m - 60;
+        }
+        System.out.println(h);
+        System.out.println(m);
+        System.out.println(s);
+    }
+}

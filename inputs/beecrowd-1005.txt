@@ -1,0 +1,9 @@
+public class Teste {
+    public static void main(String[] args) {
+        double a, b, media;
+        a = lerDouble();
+        b = lerDouble();
+        media = (a * 3.5 + b * 7.5) / 11;
+        System.out.println(media);
+    }
+}

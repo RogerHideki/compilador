@@ -1,0 +1,81 @@
+public class Teste {
+    public static void main(String[] args) {
+        double a;
+        a = 10;
+        if (a == 10) {
+            System.out.println(1.111);
+        } else {
+            System.out.println(1.000);
+        }
+        if (a == 11) {
+            System.out.println(2.000);
+        } else {
+            System.out.println(2.222);
+        }
+
+        if (a != 11) {
+            System.out.println(3.333);
+        } else {
+            System.out.println(3.000);
+        }
+        if (a != 10) {
+            System.out.println(4.000);
+        } else {
+            System.out.println(4.444);
+        }
+
+        if (a >= 9) {
+            System.out.println(5.555);
+        } else {
+            System.out.println(5.000);
+        }
+        if (a >= 10) {
+            System.out.println(6.666);
+        } else {
+            System.out.println(6.000);
+        }
+        if (a >= 11) {
+            System.out.println(7.000);
+        } else {
+            System.out.println(7.777);
+        }
+
+        if (a <= 11) {
+            System.out.println(8.888);
+        } else {
+            System.out.println(8.000);
+        }
+        if (a <= 10) {
+            System.out.println(9.999);
+        } else {
+            System.out.println(9.000);
+        }
+        if (a <= 9) {
+            System.out.println(10.00);
+        } else {
+            System.out.println(10.10);
+        }
+
+        if (a > 9) {
+            System.out.println(11.11);
+        } else {
+            System.out.println(11.00);
+        }
+        if (a > 10) {
+            System.out.println(12.00);
+        } else {
+            System.out.println(12.12);
+        }
+
+        if (a < 11) {
+            System.out.println(13.13);
+        } else {
+            System.out.println(13.00);
+        }
+        if (a < 10) {
+            System.out.println(14.00);
+        } else {
+            System.out.println(14.14);
+        }
+    }
+}

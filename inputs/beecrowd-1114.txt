@@ -1,0 +1,11 @@
+public class Teste {
+    public static void main(String[] args) {
+        double s;
+        s = lerDouble();
+        while (s != 2002) {
+            System.out.println(0);
+            s = lerDouble();
+        }
+        System.out.println(1);
+    }
+}
