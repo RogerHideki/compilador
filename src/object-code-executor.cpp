@@ -8,6 +8,7 @@ vector<double> d;
 ulli i = 0;
 ulli s;
 ulli objectCodeSize;
+vector<ulli> methodCallsAddress;
 
 // Reserva m posições na pilha D; m depende do tipo da variável
 void alme(ulli m) {
@@ -153,6 +154,20 @@ void subt() {
     d.pop_back();
 }
 
+void rtrn() {
+    i = methodCallsAddress.back() - 1;
+    methodCallsAddress.pop_back();
+}
+
+void dscd() {
+    s--;
+    d.pop_back();
+}
+
+void crrt(ulli n) {
+    methodCallsAddress.emplace_back(n);
+}
+
 int main() {
     ifstream objectCodeFile("outputs/object-code.txt");
     string line;
@@ -179,6 +194,9 @@ int main() {
     m["PARA"] = 18;
     m["SOMA"] = 19;
     m["SUBT"] = 20;
+    m["RTRN"] = 21;
+    m["DSCD"] = 22;
+    m["CRRT"] = 23;
     while (getline(objectCodeFile, line)) {
         stringstream ss(line);
         string first, second = "";
@@ -251,6 +269,15 @@ int main() {
                 break;
             case 20:
                 subt();
+                break;
+            case 21:
+                rtrn();
+                break;
+            case 22:
+                dscd();
+                break;
+            case 23:
+                crrt(objectCode[i].second);
                 break;
         }
         i++;

@@ -30,6 +30,7 @@ map<string, vector<SymbolInfo>> symbolTable;
 ulli currentMemoryIdx = 0;
 map<ulli, vector<string>> scopeStack;
 ulli currentScope = 0;
+map<string, vector<ulli>> methodCalls;
 
 vector<string> objectCode;
 stack<string> objectCodeStack;
@@ -39,7 +40,7 @@ void exitScope();
 
 void throwSemanticError(const string &errorMessage, ulli tokenIdxOffset);
 
-void verifyVariableUsage();
+void verifyVariableUsage(ulli tokenIdxOffset);
 
 void declareDouble();
 
@@ -114,9 +115,9 @@ void throwSemanticError(const string &errorMessage, ulli tokenIdxOffset) {
     exit(1);
 }
 
-void verifyVariableUsage() {
-    if (symbolTable[tokens[idx].lexeme].size()) return;
-    throwSemanticError(". Variável não declarada: ", 0);
+void verifyVariableUsage(ulli tokenIdxOffset) {
+    if (symbolTable[tokens[idx - tokenIdxOffset].lexeme].size()) return;
+    throwSemanticError(". Variável não declarada: ", tokenIdxOffset);
 }
 
 void declareDouble() {
@@ -152,6 +153,7 @@ void match(const string &expectedToken) {
 void argumentos() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ID") {
+        verifyVariableUsage(0);
         match("ID");
         maisIdent();
     } else {
@@ -171,8 +173,6 @@ void cmd() {
         return;
     }
     if (tokens[idx].token == "ID") {
-        verifyVariableUsage();
-        objectCodeStack.emplace("ARMZ " + symbolTable[tokens[idx].lexeme].back().memoryIdx);
         match("ID");
         restoIdent();
     } else {
@@ -305,7 +305,7 @@ void expIdent() {
 void fator() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ID") {
-        verifyVariableUsage();
+        verifyVariableUsage(0);
         objectCode.emplace_back("CRVL " + symbolTable[tokens[idx].lexeme].back().memoryIdx);
         match("ID");
         return;
@@ -468,6 +468,14 @@ void prog() {
         match("RIGHT_CURLY_BRACKET");
         match("RIGHT_CURLY_BRACKET");
         objectCode.emplace_back("PARA");
+        ulli i = 0;
+        for (auto it = methodCalls.begin(); it != methodCalls.end(); it++) {
+            for (auto &objectCodeDsviIdx: it->second) {
+                objectCode[objectCodeDsviIdx] += to_string(objectCode.size());
+            }
+            objectCode.emplace_back("CRCT " + to_string(i++));
+            objectCode.emplace_back("RTRN");
+        }  
     } else {
         throwSyntaxError();
     }
@@ -513,6 +521,8 @@ void relacao() {
 void restoIdent() {
     if (idx >= tokensSize) throwSyntaxError();
     if (tokens[idx].token == "ASSIGNMENT_OPERATOR") {
+        verifyVariableUsage(1);
+        objectCodeStack.emplace("ARMZ " + symbolTable[tokens[idx - 1].lexeme].back().memoryIdx);
         match("ASSIGNMENT_OPERATOR");
         expIdent();
         objectCode.emplace_back(objectCodeStack.top());
@@ -520,10 +530,13 @@ void restoIdent() {
         return;
     }
     if (tokens[idx].token == "LEFT_PARENTHESIS") {
-        throwSemanticError(". Método não declarado: ", 1);
+        methodCalls[tokens[idx - 1].lexeme].emplace_back(objectCode.size() + 1);
         match("LEFT_PARENTHESIS");
         listaArg();
         match("RIGHT_PARENTHESIS");
+        objectCode.emplace_back("CRRT " + to_string(objectCode.size() + 2));
+        objectCode.emplace_back("DSVI ");
+        objectCode.emplace_back("DSCD");
     } else {
         throwSyntaxError();
     }
