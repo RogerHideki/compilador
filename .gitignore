@@ -2,3 +2,5 @@ compiler-core.exe
 lex.exe
 lex.yy.c
 object-code-executor.exe
+object-code.txt
+tokens.txt
