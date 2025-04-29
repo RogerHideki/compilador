@@ -10,8 +10,10 @@ public class Teste {
             while (n > 0) {
                 fib = fib + prev;
                 prev = fib - prev;
+                n = n - 1;
             }
             System.out.println(fib);
+            t = t - 1;
         }
     }
 }

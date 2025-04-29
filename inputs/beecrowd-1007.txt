@@ -3,6 +3,8 @@ public class Teste {
         double a, b, c, d, diferenca;
         a = lerDouble();
         b = lerDouble();
+        c = lerDouble();
+        d = lerDouble();
         diferenca = a * b - c * d;
         System.out.println(diferenca);
     }
